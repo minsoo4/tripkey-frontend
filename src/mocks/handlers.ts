@@ -2,12 +2,17 @@ import { http, HttpResponse } from 'msw/http';
 
 import {
   DEMO_TRIP_ID,
-  demoCardsResponse,
-  demoDays,
   demoRouteLegsResponse,
   demoTrip,
 } from '@/dev-fixtures/demo-trip';
 import { API_BASE_URL, API_PATH } from '@/utils/constants';
+
+import {
+  confirmDemoPlacement,
+  getDemoCards,
+  getDemoDay,
+  getDemoGroups,
+} from './demo-store';
 
 // 브라우저 요청 주소를 사용합니다. Vite 프록시가 바꾸는 /v1 주소가 아닙니다.
 const apiUrl = (path: string) => `${API_BASE_URL.replace(/\/$/, '')}${path}`;
@@ -24,7 +29,7 @@ export const handlers = [
   ),
   http.get(apiUrl(API_PATH.CARDS(':tripId')), ({ params }) =>
     params.tripId === DEMO_TRIP_ID
-      ? HttpResponse.json(demoCardsResponse)
+      ? HttpResponse.json(getDemoCards())
       : notFound()
   ),
   http.get(apiUrl(`${tripPath}/days/:dayNumber`), ({ params }) => {
@@ -33,13 +38,41 @@ export const handlers = [
       params.tripId !== DEMO_TRIP_ID ||
       !Number.isInteger(dayNumber) ||
       dayNumber < 1 ||
-      dayNumber > demoDays.length
+      dayNumber > demoTrip.travel_days
     ) {
       return notFound();
     }
 
-    return HttpResponse.json(demoDays[dayNumber - 1]);
+    return HttpResponse.json(getDemoDay(dayNumber));
   }),
+  http.get(apiUrl(API_PATH.GROUPS(':tripId')), ({ params, request }) => {
+    if (params.tripId !== DEMO_TRIP_ID) return notFound();
+    if (new URL(request.url).searchParams.get('view') !== '04') {
+      return HttpResponse.json(
+        { message: '데모는 일정 배치 화면의 카드 목록만 지원합니다.' },
+        { status: 501 }
+      );
+    }
+    return HttpResponse.json(getDemoGroups());
+  }),
+  http.post(
+    apiUrl(API_PATH.CONFIRM(':tripId')),
+    async ({ params, request }) => {
+      if (params.tripId !== DEMO_TRIP_ID) return notFound();
+      try {
+        return HttpResponse.json(confirmDemoPlacement(await request.json()));
+      } catch (error) {
+        return HttpResponse.json(
+          {
+            code: 'INVALID_PLACEMENT',
+            message:
+              error instanceof Error ? error.message : '잘못된 일정입니다.',
+          },
+          { status: 400 }
+        );
+      }
+    }
+  ),
   http.get(apiUrl(API_PATH.ROUTE_LEGS(':tripId')), ({ params }) =>
     params.tripId === DEMO_TRIP_ID
       ? HttpResponse.json(demoRouteLegsResponse)
@@ -51,7 +84,8 @@ export const handlers = [
     HttpResponse.json(
       {
         code: 'DEMO_NOT_IMPLEMENTED',
-        message: '현재 데모는 확정 일정 조회만 지원합니다.',
+        message:
+          '데모는 일정 조회·카드 배치·확정을 지원합니다. 이 기능은 아직 지원하지 않습니다.',
       },
       { status: 501 }
     )

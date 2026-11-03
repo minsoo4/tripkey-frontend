@@ -49,7 +49,8 @@ const startApp = async () => {
           role="status"
           className="bg-violet-100 px-4 py-2 text-center text-sm text-violet-950"
         >
-          예제 데이터 데모 · 현재는 확정 일정 조회만 지원합니다.
+          예제 데이터 데모 · 카드 이동 후 일정 확정을 체험할 수 있습니다.
+          새로고침하면 초기화됩니다. AI·채팅·실제 동선 계산은 지원하지 않습니다.
         </div>
       )}
       <App />
