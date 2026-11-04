@@ -192,7 +192,7 @@ const GroupingPage = () => {
 
   const handlePrev = () => {
     clearJob(); // 완료된 jobId 제거 → dump 재진입 시 grouping으로 튕기는 것 방지
-    navigate('/dump');
+    navigate(import.meta.env.MODE === 'demo' ? '/onboarding' : '/dump');
   };
   const urlTripId = searchParams.get('tripId');
   const storeTripId = useOnboardingStore((s) => s.tripId);

@@ -10,6 +10,7 @@ import TripCalendar from '../components/onboarding/calendar/TripCalendar';
 import DestinationInput from '../components/onboarding/DestinationInput';
 import { Button } from '../components/ui/button';
 import { Separator } from '../components/ui/separator';
+import { queryClient } from '../lib/query-client';
 import { cn } from '../lib/utils';
 import {
   useCalendarStore,
@@ -44,9 +45,11 @@ const SummaryRow = ({
 );
 
 const OnboardingPage = () => {
+  const isDemo = import.meta.env.MODE === 'demo';
   const navigate = useNavigate();
   const { submitOnboarding, resetForm } = useOnboardingStore((s) => s.actions);
   const errorMessage = useOnboardingStore((s) => s.errorMessage);
+  const submitting = useOnboardingStore((s) => s.requestStatus === 'loading');
 
   const { tripName, destinations, companion_count } = useOnboardingStore(
     (s) => s.form
@@ -66,18 +69,31 @@ const OnboardingPage = () => {
   const remainingFields = 2 - filledCount;
   const progressValueLabel =
     remainingFields > 0 ? `${remainingFields}개 남음` : '준비 완료';
-  const isNextDisabled = filledCount < 2;
+  const isNextDisabled = filledCount < 2 || submitting;
+
+  useEffect(() => {
+    if (isDemo) setForm({ destinations: ['오사카'] });
+  }, [isDemo, setForm]);
 
   // 스플래시에서 이어지듯 떠오른다.
   const [shown, setShown] = useState(false);
   useEffect(() => setShown(true), []);
 
   const handleNext = async () => {
+    if (isNextDisabled) return;
+    if (isDemo) setForm({ destinations: ['오사카'], travel_days: nights + 1 });
     const success = await submitOnboarding();
     if (success) {
       const tripId = useOnboardingStore.getState().tripId;
-      posthog.capture('onboarding_completed', { trip_id: tripId });
-      navigate('/dump');
+      if (isDemo) {
+        // 예제 ID를 재사용하므로 이전 여행의 조회 결과를 비웁니다.
+        queryClient.removeQueries({ queryKey: ['trip', tripId] });
+        queryClient.removeQueries({ queryKey: ['arrange', tripId] });
+        navigate(`/grouping?tripId=${tripId}`);
+      } else {
+        posthog.capture('onboarding_completed', { trip_id: tripId });
+        navigate('/dump');
+      }
     }
   };
 
@@ -87,6 +103,7 @@ const OnboardingPage = () => {
   const handleReset = () => {
     resetForm();
     resetCalendar();
+    if (isDemo) setForm({ destinations: ['오사카'] });
   };
 
   return (
@@ -112,7 +129,9 @@ const OnboardingPage = () => {
               어디로 떠나볼까요?
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              간단히 알려주면 여행 준비를 시작할게요
+              {isDemo
+                ? '오사카 예제 여행입니다. 기간(최대 30일)과 인원을 선택하면 준비된 장소 카드로 이어집니다. AI 입력 단계는 생략합니다.'
+                : '간단히 알려주면 여행 준비를 시작할게요'}
             </p>
           </header>
 
@@ -166,7 +185,16 @@ const OnboardingPage = () => {
 
                   <div>
                     <Label>여행지</Label>
-                    <DestinationInput placeholder="도시명을 검색하세요" />
+                    {isDemo ? (
+                      <input
+                        aria-label="예제 여행지"
+                        value="오사카"
+                        readOnly
+                        className="h-10.5 w-full rounded-xl border border-input bg-muted px-3.5 text-sm"
+                      />
+                    ) : (
+                      <DestinationInput placeholder="도시명을 검색하세요" />
+                    )}
                   </div>
 
                   <div>
@@ -214,7 +242,7 @@ const OnboardingPage = () => {
                   disabled={isNextDisabled}
                   className="mt-5 h-11 w-full text-sm font-semibold"
                 >
-                  다음 단계로
+                  {submitting ? '여행 준비 중…' : '다음 단계로'}
                 </Button>
                 {isNextDisabled && (
                   <p className="mt-3 text-xs text-muted-foreground">

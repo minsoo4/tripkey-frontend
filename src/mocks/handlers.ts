@@ -1,17 +1,16 @@
 import { http, HttpResponse } from 'msw/http';
 
-import {
-  DEMO_TRIP_ID,
-  demoRouteLegsResponse,
-  demoTrip,
-} from '@/dev-fixtures/demo-trip';
+import { DEMO_TRIP_ID, demoRouteLegsResponse } from '@/dev-fixtures/demo-trip';
 import { API_BASE_URL, API_PATH } from '@/utils/constants';
 
 import {
   confirmDemoPlacement,
+  createDemoTrip,
+  getDemoTrip,
   getDemoCards,
   getDemoDay,
   getDemoGroups,
+  getDemoGroups03,
 } from './demo-store';
 
 // 브라우저 요청 주소를 사용합니다. Vite 프록시가 바꾸는 /v1 주소가 아닙니다.
@@ -24,36 +23,64 @@ const notFound = () =>
   );
 
 export const handlers = [
+  http.post(apiUrl(API_PATH.ONBOARDING), async ({ request }) => {
+    try {
+      return HttpResponse.json(createDemoTrip(await request.json()), {
+        status: 201,
+      });
+    } catch (error) {
+      return HttpResponse.json(
+        {
+          code: 'VALIDATION_ERROR',
+          message:
+            error instanceof Error
+              ? error.message
+              : '여행 정보를 확인해 주세요.',
+        },
+        { status: 400 }
+      );
+    }
+  }),
   http.get(apiUrl(tripPath), ({ params }) =>
-    params.tripId === DEMO_TRIP_ID ? HttpResponse.json(demoTrip) : notFound()
+    params.tripId === DEMO_TRIP_ID
+      ? HttpResponse.json(getDemoTrip())
+      : notFound()
   ),
   http.get(apiUrl(API_PATH.CARDS(':tripId')), ({ params }) =>
     params.tripId === DEMO_TRIP_ID
       ? HttpResponse.json(getDemoCards())
       : notFound()
   ),
+  http.get(apiUrl(API_PATH.GROUPS(':tripId')), ({ params, request }) => {
+    if (params.tripId !== DEMO_TRIP_ID) return notFound();
+
+    const view = new URL(request.url).searchParams.get('view');
+
+    if (view === '03') {
+      return HttpResponse.json(getDemoGroups03());
+    }
+
+    if (view === '04') {
+      return HttpResponse.json(getDemoGroups());
+    }
+
+    return HttpResponse.json(
+      { message: '지원하지 않는 화면입니다.' },
+      { status: 501 }
+    );
+  }),
   http.get(apiUrl(`${tripPath}/days/:dayNumber`), ({ params }) => {
     const dayNumber = Number(params.dayNumber);
     if (
       params.tripId !== DEMO_TRIP_ID ||
       !Number.isInteger(dayNumber) ||
       dayNumber < 1 ||
-      dayNumber > demoTrip.travel_days
+      dayNumber > getDemoTrip().travel_days
     ) {
       return notFound();
     }
 
     return HttpResponse.json(getDemoDay(dayNumber));
-  }),
-  http.get(apiUrl(API_PATH.GROUPS(':tripId')), ({ params, request }) => {
-    if (params.tripId !== DEMO_TRIP_ID) return notFound();
-    if (new URL(request.url).searchParams.get('view') !== '04') {
-      return HttpResponse.json(
-        { message: '데모는 일정 배치 화면의 카드 목록만 지원합니다.' },
-        { status: 501 }
-      );
-    }
-    return HttpResponse.json(getDemoGroups());
   }),
   http.post(
     apiUrl(API_PATH.CONFIRM(':tripId')),

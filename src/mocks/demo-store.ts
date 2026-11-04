@@ -4,12 +4,67 @@ import type {
   Groups04Response,
   PlacementSaveResponse,
 } from '@/types/arrange-api';
+import type { Groups03Response } from '@/types/grouping-api';
 
 // fixture는 초기값, 이 모듈은 현재 상태입니다. 새로고침하면 초기값으로 돌아갑니다.
 let cards = structuredClone(demoCardsResponse.cards);
+let trip = structuredClone(demoTrip);
+
+export const getDemoTrip = () => structuredClone(trip);
+
+export const createDemoTrip = (body: unknown) => {
+  if (
+    !isRecord(body) ||
+    !Array.isArray(body.destinations) ||
+    body.destinations.length !== 1 ||
+    body.destinations[0] !== '오사카' ||
+    typeof body.travel_days !== 'number' ||
+    !Number.isInteger(body.travel_days) ||
+    body.travel_days < 1 ||
+    body.travel_days > 30 ||
+    typeof body.companion_count !== 'number' ||
+    !Number.isInteger(body.companion_count) ||
+    body.companion_count < 1
+  )
+    throw new Error(
+      '오사카 여행의 기간(1~30일)과 인원(1명 이상)을 확인해 주세요.'
+    );
+
+  trip = {
+    ...structuredClone(demoTrip),
+    travel_days: body.travel_days,
+    companion_count: body.companion_count,
+    confirmed: false,
+    created_at: new Date().toISOString(),
+    // 현재 생성 API에는 시작일이 없으므로 화면의 캘린더 상태를 사용합니다.
+    start_date: null,
+  };
+  cards = structuredClone(demoCardsResponse.cards);
+  // 기존 예제 배치를 기간에 맞춰 조정합니다. 3일 이상이면 나머지 날짜는 비워둡니다.
+  const orders = new Map<number, number>();
+  for (const card of cards) {
+    card.day = Math.min(card.day ?? 1, trip.travel_days);
+    card.day_order = (orders.get(card.day) ?? 0) + 1;
+    orders.set(card.day, card.day_order);
+  }
+  return { trip_id: trip.trip_id, created_at: trip.created_at };
+};
 
 export const getDemoCards = () =>
-  structuredClone({ ...demoCardsResponse, cards });
+  structuredClone({
+    ...demoCardsResponse,
+    cards,
+    context_summary: `${trip.companion_count}명이 함께하는 오사카 ${trip.travel_days}일 예제 여행`,
+  });
+
+export const getDemoGroups03 = (): Groups03Response => ({
+  view: '03',
+  input_required: [],
+  select_required: [],
+  fix_required: [],
+  review_only: getDemoCards().cards,
+  excluded: [],
+});
 
 export const getDemoDay = (day: number): DayViewModel => ({
   day_id: `${demoTrip.trip_id}-day-${day}`,
@@ -59,7 +114,7 @@ export const confirmDemoPlacement = (body: unknown): PlacementSaveResponse => {
       typeof day.day_number !== 'number' ||
       !Number.isInteger(day.day_number) ||
       day.day_number < 1 ||
-      day.day_number > demoTrip.travel_days ||
+      day.day_number > trip.travel_days ||
       usedDays.has(day.day_number) ||
       !Array.isArray(day.cards)
     )
@@ -99,6 +154,7 @@ export const confirmDemoPlacement = (body: unknown): PlacementSaveResponse => {
   }
 
   cards = nextCards;
+  trip.confirmed = true;
   // 실제 동선 계산은 하지 않습니다. 실측 이동 시간이나 검증 결과를 생성하지 않습니다.
   return {
     saved: true,
