@@ -1,10 +1,4 @@
-import {
-  Calendar,
-  Check,
-  MapPin,
-  UserRound,
-  Users,
-} from 'lucide-react';
+import { Calendar, Check, MapPin, UserRound, Users } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -33,7 +27,9 @@ const STEPS: Step[] = [
   { id: 'organize', label: '정리', path: '/grouping' },
   { id: 'arrange', label: '배치', path: '/arrange' },
   { id: 'confirm', label: '확정', path: '/confirm' },
-];
+].filter(
+  (step) => import.meta.env.MODE !== 'demo' || step.id !== 'dump'
+) as Step[];
 
 export type HeaderProps = {
   currentStepId?: StepId;

@@ -41,7 +41,19 @@ const AppContent = () => {
   return (
     <>
       <Routes>
-        <Route path="/" element={<MainPage onStartPlanning={openLogin} />} />
+        <Route
+          path="/"
+          element={
+            <MainPage
+              onStartPlanning={openLogin}
+              onStartDemo={
+                import.meta.env.MODE === 'demo'
+                  ? () => navigate('/onboarding')
+                  : undefined
+              }
+            />
+          }
+        />
         <Route path="/onboarding" element={<OnboardingPage />} />
         <Route path="/prototype/chat" element={<ChatPrototypePage />} />
         <Route

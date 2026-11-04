@@ -41,7 +41,7 @@ import {
   useReorderGroupsMutation,
   useSuggestedItineraryMutation,
 } from '@/hooks/useArrange';
-import { useTripDetailQuery } from '@/hooks/useTripDetail';
+import { tripKeys, useTripDetailQuery } from '@/hooks/useTripDetail';
 import { cn } from '@/lib/utils';
 import type {
   ArrangeCardGroup,
@@ -863,6 +863,7 @@ const ArrangePage = () => {
       await queryClient.invalidateQueries({
         queryKey: ['arrange', tripId],
       });
+      await queryClient.invalidateQueries({ queryKey: tripKeys.detail(tripId) });
       navigate(`/confirm${tripId ? `?tripId=${tripId}` : ''}`, {
         state: { notice: '일정이 확정되었습니다.' },
       });

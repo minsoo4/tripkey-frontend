@@ -134,12 +134,15 @@ const reveal = (shown: boolean) =>
     shown ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
   );
 
-// CTA를 누르면 App 레벨 스플래시를 띄운 채 온보딩으로 진입한다.
+// 데모에서는 준비된 예제 여행으로, 일반 모드에서는 로그인 안내로 진입한다.
 type MainPageProps = {
   onStartPlanning: () => void;
+  onStartDemo?: () => void;
 };
 
-const MainPage = ({ onStartPlanning: startPlanning }: MainPageProps) => {
+const MainPage = ({ onStartPlanning, onStartDemo }: MainPageProps) => {
+  const startPlanning = onStartDemo ?? onStartPlanning;
+  const startLabel = onStartDemo ? '예제 여행 체험하기' : '여행 계획 세우기';
   // 히어로를 지나 아래로 스크롤하면 헤더 CTA를 보여준다.
   const [showHeaderCta, setShowHeaderCta] = useState(false);
   useEffect(() => {
@@ -240,7 +243,7 @@ const MainPage = ({ onStartPlanning: startPlanning }: MainPageProps) => {
               showHeaderCta ? 'opacity-100' : 'pointer-events-none opacity-0'
             )}
           >
-            여행 계획 세우기
+            {startLabel}
           </Button>
         </div>
       </header>
@@ -269,13 +272,20 @@ const MainPage = ({ onStartPlanning: startPlanning }: MainPageProps) => {
               className="peer relative z-10 h-14 cursor-pointer rounded-full px-10 text-base font-semibold transition-transform hover:bg-primary/90 hover:scale-[1.03] active:scale-95"
               onClick={startPlanning}
             >
-              여행 계획 세우기
+              {startLabel}
             </Button>
             <span
               aria-hidden="true"
               className="pointer-events-none absolute inset-0 -z-0 m-auto size-40 animate-pulse rounded-full bg-primary/30 blur-2xl transition-transform duration-500 ease-out peer-hover:scale-125 motion-reduce:animate-none"
             />
           </div>
+          {onStartDemo && (
+            <p className="mt-4 max-w-sm text-sm text-muted-foreground">
+              오사카 여행의 기간·인원을 선택하고 카드 정리·일정 배치·확정을
+              체험하세요. 로그인 없이 시작하며, 새로고침하면 변경 내용이
+              초기화됩니다.
+            </p>
+          )}
         </div>
         <div
           aria-hidden="true"
