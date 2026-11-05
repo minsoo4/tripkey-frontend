@@ -170,7 +170,6 @@ const MainPage = ({ onStartPlanning, onStartDemo }: MainPageProps) => {
   // 스크롤로 들어올 때 등장시킬 섹션들.
   const preview = useReveal<HTMLElement>();
   const features = useReveal<HTMLElement>();
-  const tips = useReveal<HTMLDivElement>();
 
   // 기능 카루셀 자동 슬라이드 (hover/터치 시 멈춤, 끝나면 처음으로, 모션 민감 사용자는 제외).
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -538,10 +537,14 @@ const MainPage = ({ onStartPlanning, onStartDemo }: MainPageProps) => {
           {FEATURED_DESTINATIONS.map((dest) => (
             <div
               key={dest.id}
-              className="group relative h-96 w-80 shrink-0 snap-center overflow-hidden rounded-3xl"
+              className="group relative h-96 w-80 shrink-0 snap-center overflow-hidden rounded-3xl bg-muted"
             >
               <img
-                src={dest.image}
+                src={`${dest.image}?auto=compress&cs=tinysrgb&w=640`}
+                srcSet={`${dest.image}?auto=compress&cs=tinysrgb&w=320 320w, ${dest.image}?auto=compress&cs=tinysrgb&w=640 640w, ${dest.image}?auto=compress&cs=tinysrgb&w=960 960w`}
+                sizes="320px"
+                loading="lazy"
+                decoding="async"
                 alt={dest.name}
                 className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
@@ -585,10 +588,7 @@ const MainPage = ({ onStartPlanning, onStartDemo }: MainPageProps) => {
 
       {/* 여행 팁 */}
       <section className="bg-muted/30 py-16">
-        <div
-          ref={tips.ref}
-          className={cn('mx-auto max-w-6xl px-6', reveal(tips.shown))}
-        >
+        <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-3xl font-bold tracking-tight sm:text-3xl">
             여행 팁
           </h2>
