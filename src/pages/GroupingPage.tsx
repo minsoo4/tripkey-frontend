@@ -728,7 +728,21 @@ const GroupingPage = () => {
                     role="alert"
                     className="rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive"
                   >
-                    {inlineError}
+                    <p>{inlineError}</p>
+
+                    {state.phase === 'error' && (
+                      <Button
+                        variant="outline"
+                        className="mt-3 text-foreground"
+                        onClick={() =>
+                          navigate('/onboarding', { replace: true })
+                        }
+                      >
+                        {import.meta.env.MODE === 'demo'
+                          ? '예제 여행 다시 시작'
+                          : '여행 다시 시작'}
+                      </Button>
+                    )}
                   </div>
                 )}
 

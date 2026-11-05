@@ -863,7 +863,9 @@ const ArrangePage = () => {
       await queryClient.invalidateQueries({
         queryKey: ['arrange', tripId],
       });
-      await queryClient.invalidateQueries({ queryKey: tripKeys.detail(tripId) });
+      await queryClient.invalidateQueries({
+        queryKey: tripKeys.detail(tripId),
+      });
       navigate(`/confirm${tripId ? `?tripId=${tripId}` : ''}`, {
         state: { notice: '일정이 확정되었습니다.' },
       });
@@ -922,7 +924,7 @@ const ArrangePage = () => {
   return (
     <div
       className={cn(
-        'flex h-screen flex-col overflow-hidden bg-linear-to-b from-muted/50 to-background',
+        'flex h-full flex-col overflow-hidden bg-linear-to-b from-muted/50 to-background',
         PAGE_ENTER
       )}
     >
