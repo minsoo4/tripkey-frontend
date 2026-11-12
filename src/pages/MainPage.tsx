@@ -23,6 +23,10 @@ import {
 import { useReveal } from '@/hooks/useReveal';
 import { cn } from '@/lib/utils';
 
+// 카드(320×384) 비율로 먼저 잘라 object-cover의 추가 확대를 방지한다.
+const destinationImageUrl = (image: string, width: number) =>
+  `${image}?auto=compress&cs=tinysrgb&fit=crop&w=${width}&h=${Math.round(width * 1.2)}&q=85&fm=webp`;
+
 const TIP_ICONS: Record<string, LucideIcon> = {
   'tip-flight': Plane,
   'tip-pack': Luggage,
@@ -540,8 +544,8 @@ const MainPage = ({ onStartPlanning, onStartDemo }: MainPageProps) => {
               className="group relative h-96 w-80 shrink-0 snap-center overflow-hidden rounded-3xl bg-muted"
             >
               <img
-                src={`${dest.image}?auto=compress&cs=tinysrgb&w=640`}
-                srcSet={`${dest.image}?auto=compress&cs=tinysrgb&w=320 320w, ${dest.image}?auto=compress&cs=tinysrgb&w=640 640w, ${dest.image}?auto=compress&cs=tinysrgb&w=960 960w`}
+                src={destinationImageUrl(dest.image, 640)}
+                srcSet={`${destinationImageUrl(dest.image, 640)} 640w, ${destinationImageUrl(dest.image, 960)} 960w, ${destinationImageUrl(dest.image, 1280)} 1280w`}
                 sizes="320px"
                 loading="lazy"
                 decoding="async"
