@@ -20,26 +20,20 @@
 
 **minsoo · 프론트엔드 개발**
 
-- **온보딩·메모 입력** — 입력 과정 간소화 제안, 여행 정보와 예약 정보 입력 화면, API 연동
-- **날짜 선택** — 정확한 날짜와 월·숙박 일수 선택 방식 구현, 선택 결과를 여행 요약에 연결
-- **공통 UI** — 팀원과 컴포넌트 분리 기준을 논의하고, 여행 요약 영역과 헤더 정리
-- **확정 화면·지도** — 날짜별 일정, 장소 마커와 호버 정보, 순서 연결선
-- **공유** — 공유 링크 생성, 네이티브 공유와 클립보드 복사, 공유 링크 진입 시 작성자용 UI 숨김
-- **기존 화면 개선** — 정리·배치 UI, 미완료 카드의 진행 제한
+AI 처리·추천과 백엔드는 팀 작업이며, 아래는 제가 담당한 프론트엔드 영역입니다.
+
+| 영역 | 주요 작업 | 구현 근거 |
+| --- | --- | --- |
+| 온보딩·날짜 선택 | 입력 과정 간소화 제안, 정확한 날짜와 월·숙박 일수 선택, 여행 생성 API 연동 | [날짜 입력](https://github.com/minsoo4/tripkey-frontend/commit/0b6d967) · [API](https://github.com/minsoo4/tripkey-frontend/commit/f190463) |
+| 여행 정보 입력 | 메모 입력 화면과 API 연동, 항공·숙박 정보 입력 | [입력 API](https://github.com/minsoo4/tripkey-frontend/commit/a88a018) · [예약 정보](https://github.com/minsoo4/tripkey-frontend/commit/c701d17) |
+| 공통 UI | 팀원과 분리 기준 논의, 여행 요약 카드·헤더 공통화 | [공통화](https://github.com/minsoo4/tripkey-frontend/commit/47024ba) |
+| 일정 확인·공유 | 날짜별 지도 마커·방문 순서 표시, 기본 공유·링크 복사, 공유 화면의 작성자용 UI 분리 | [지도](https://github.com/minsoo4/tripkey-frontend/commit/9de25f2) · [공유](https://github.com/minsoo4/tripkey-frontend/commit/310e6ad) |
+| 기존 화면 개선 | 정리·배치 UI 수정, 미완료 카드가 있을 때 다음 단계 진행 제한 | [정리](https://github.com/minsoo4/tripkey-frontend/commit/4655bdd) · [배치](https://github.com/minsoo4/tripkey-frontend/commit/f8b5a9f) · [진행 제한](https://github.com/minsoo4/tripkey-frontend/commit/04196c5) |
 
 <details>
-<summary>작업별 커밋 보기</summary>
+<summary>기타 작업</summary>
 
-| 영역 | 작업 내용 | 대표 커밋 |
-| --- | --- | --- |
-| 온보딩 | 여행지·인원 입력 UI와 여행 생성 API 연동 | [UI](https://github.com/minsoo4/tripkey-frontend/commit/ca81235), [API](https://github.com/minsoo4/tripkey-frontend/commit/f190463) |
-| 날짜 선택 | 정확한 날짜와 월·숙박 일수 입력, 공통 스토어와 요약 연결 | [날짜 입력](https://github.com/minsoo4/tripkey-frontend/commit/0b6d967) |
-| 메모 입력 | 입력 화면, Dump API·DTO, 항공·숙박 정보 입력 및 연동 | [화면](https://github.com/minsoo4/tripkey-frontend/commit/fab01ae), [API](https://github.com/minsoo4/tripkey-frontend/commit/a88a018), [예약 정보](https://github.com/minsoo4/tripkey-frontend/commit/c701d17) |
-| 공통 UI | 여행 요약 카드 공통화, 화면별 데이터·동작 전달, 공통 헤더 적용 | [요약 영역 정리](https://github.com/minsoo4/tripkey-frontend/commit/5f6dc88), [요약 카드·헤더 통합](https://github.com/minsoo4/tripkey-frontend/commit/47024ba) |
-| 확정 화면·지도 | 확정 화면 UI, 날짜별 장소 마커, 호버 정보와 순서 연결선 | [화면](https://github.com/minsoo4/tripkey-frontend/commit/c5e2223), [지도](https://github.com/minsoo4/tripkey-frontend/commit/9de25f2) |
-| 공유 | 네이티브 공유·클립보드 복사, 공유 화면의 작성자용 UI 숨김 | [공유](https://github.com/minsoo4/tripkey-frontend/commit/310e6ad) |
-| 기존 화면 개선 | 공통 헤더, 정리·배치 화면 UI 수정, 미완료 카드가 있을 때 다음 단계 진행 제한 | [헤더](https://github.com/minsoo4/tripkey-frontend/commit/f09a6bd), [정리](https://github.com/minsoo4/tripkey-frontend/commit/4655bdd), [배치](https://github.com/minsoo4/tripkey-frontend/commit/f8b5a9f), [진행 제한](https://github.com/minsoo4/tripkey-frontend/commit/04196c5) |
-| 이벤트 분석 연동 | 제출·확정·조회·공유 시점에 PostHog 이벤트 호출 코드 추가. 실제 수집 여부는 미검증 | [이벤트 호출 추가](https://github.com/minsoo4/tripkey-frontend/commit/368ed71) |
+- PostHog 이벤트 호출 코드 추가: 제출·확정·조회·공유 시점에 호출하도록 연결했습니다. 실제 수집 여부는 확인하지 않았습니다. [커밋](https://github.com/minsoo4/tripkey-frontend/commit/368ed71)
 
 </details>
 
@@ -84,27 +78,25 @@
 
 [정보 유지 구현](https://github.com/minsoo4/tripkey-frontend/commit/4ffe19f) · [sessionStorage로 변경](https://github.com/minsoo4/tripkey-frontend/commit/47024ba) · [코드 보기](src/utils/calendar-store.ts)
 
-### 02. 날짜 유형 전환·재선택 시 상태 오류 수정
+### 02. 날짜 유형 전환·재선택 오류
 
-날짜 입력과 요약 화면은 Zustand 공통 스토어의 날짜 정보를 사용합니다. 입력 유형 전환과 날짜 재선택 과정에서 서로 다른 두 문제가 발생했습니다.
+정확한 날짜와 월·숙박 일수 중 하나를 선택하는 기능에서 두 가지 상태 오류를 수정했습니다.
 
-#### 유형 전환 후 요약 오류
+#### 입력 유형을 바꿔도 이전 기간이 표시됨
 
-**문제** — 정확한 날짜와 유연한 날짜 데이터가 함께 남아, 요약에서 값을 읽는 우선순위에 따라 현재 선택과 다른 숙박 일수가 표시됐습니다.
+- **원인:** 두 유형의 날짜 데이터가 함께 남아, 이전 값이 요약에 반영됐습니다.
+- **수정:** 공통 스토어에서 한 유형의 날짜를 설정하면 반대 유형의 데이터를 초기화했습니다.
 
-**수정** — 공통 스토어에서 정확한 날짜를 설정하면 유연한 날짜 데이터를 비우고, 유연한 날짜를 설정하면 정확한 날짜 데이터를 비우도록 처리했습니다.
+[수정 커밋](https://github.com/minsoo4/tripkey-frontend/commit/1bebf73) · [코드](src/utils/calendar-store.ts)
 
-[수정 커밋](https://github.com/minsoo4/tripkey-frontend/commit/1bebf73) · [공통 스토어](src/utils/calendar-store.ts)
+#### 날짜를 다시 고르는 중 다른 탭으로 이동함
 
-#### 재선택 중 탭 전환 오류
+- **원인:** 시작일만 선택된 중간 상태에서 날짜 유형이 초기화되자, 이를 감지한 코드가 탭까지 변경했습니다.
+- **수정:** 저장된 값으로 초기 탭을 설정하는 동작은 유지하고, 입력 중 날짜 유형이 비워질 때 탭을 강제로 바꾸던 처리를 제거했습니다.
 
-**문제** — 정확한 날짜를 다시 선택하면서 시작일만 입력된 중간 상태가 되면 저장된 날짜 유형이 초기화됐습니다. 이 값의 변화를 감지한 코드가 화면을 유연한 날짜 탭으로 전환해 입력 흐름이 끊겼습니다.
+[수정 커밋](https://github.com/minsoo4/tripkey-frontend/commit/b6de703) · [코드](src/components/onboarding/calendar/TripCalendar.tsx)
 
-**수정** — 저장된 값으로 초기 탭을 설정하는 동작은 유지하고, 날짜 유형이 비워질 때 탭을 강제로 바꾸던 처리를 제거했습니다. 탭은 컴포넌트의 화면 상태로 관리해 날짜를 다시 선택하는 중에도 같은 화면에서 입력을 이어가도록 했습니다.
-
-[수정 커밋](https://github.com/minsoo4/tripkey-frontend/commit/b6de703) · [탭 컴포넌트](src/components/onboarding/calendar/TripCalendar.tsx)
-
-두 문제를 수정하며 함께 남아 있으면 안 되는 데이터는 정리하고, 저장된 날짜 정보와 현재 보고 있는 탭 상태의 역할은 구분했습니다.
+**정리:** 함께 남으면 안 되는 날짜 데이터는 초기화하고, 현재 보고 있는 탭과 저장된 날짜 정보는 역할을 구분했습니다.
 
 ### 03. 늦게 도착하는 지도 좌표 반영
 
