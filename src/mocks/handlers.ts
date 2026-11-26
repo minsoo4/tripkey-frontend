@@ -4,6 +4,7 @@ import { DEMO_TRIP_ID, demoRouteLegsResponse } from '@/dev-fixtures/demo-trip';
 import { API_BASE_URL, API_PATH } from '@/utils/constants';
 
 import {
+  resolveDemoDinner,
   confirmDemoPlacement,
   createDemoTrip,
   getDemoTrip,
@@ -50,6 +51,35 @@ export const handlers = [
     params.tripId === DEMO_TRIP_ID
       ? HttpResponse.json(getDemoCards())
       : notFound()
+  ),
+  http.patch(
+    apiUrl(API_PATH.CARD(':tripId', ':instanceId')),
+    async ({ params, request }) => {
+      if (params.tripId !== DEMO_TRIP_ID) return notFound();
+      if (
+        !getDemoCards().cards.some(
+          (card) => card.instance_id === params.instanceId
+        )
+      )
+        return notFound();
+      if (params.instanceId !== 'demo-dinner-choice') {
+        return HttpResponse.json(
+          { message: '데모에서는 저녁 메뉴 질문에만 답변할 수 있어요.' },
+          { status: 501 }
+        );
+      }
+      try {
+        return HttpResponse.json(resolveDemoDinner(await request.json()));
+      } catch (error) {
+        return HttpResponse.json(
+          {
+            message:
+              error instanceof Error ? error.message : '메뉴를 확인해 주세요.',
+          },
+          { status: 400 }
+        );
+      }
+    }
   ),
   http.get(apiUrl(API_PATH.GROUPS(':tripId')), ({ params, request }) => {
     if (params.tripId !== DEMO_TRIP_ID) return notFound();

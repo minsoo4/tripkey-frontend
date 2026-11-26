@@ -61,6 +61,16 @@ const createDemoCard = (place: DemoPlace): Card => ({
 
 // 좌표는 지도 시연용이며, 체류 시간과 방문 순서는 예시입니다.
 export const demoCards: Card[] = [
+  // Day 1: 오사카성에서 나카노시마까지 서쪽으로 이동
+  createDemoCard({
+    instance_id: 'demo-osaka-history',
+    name: '오사카 역사박물관',
+    category: 'place',
+    coordinates: { lat: 34.6826, lng: 135.5208 },
+    estimated_duration_min: 60,
+    day: 1,
+    day_order: 1,
+  }),
   createDemoCard({
     instance_id: 'demo-osaka-castle',
     name: '오사카성',
@@ -68,7 +78,7 @@ export const demoCards: Card[] = [
     coordinates: { lat: 34.6873, lng: 135.5262 },
     estimated_duration_min: 90,
     day: 1,
-    day_order: 1,
+    day_order: 2,
   }),
   createDemoCard({
     instance_id: 'demo-nakanoshima',
@@ -77,8 +87,9 @@ export const demoCards: Card[] = [
     coordinates: { lat: 34.6926, lng: 135.5062 },
     estimated_duration_min: 60,
     day: 1,
-    day_order: 2,
+    day_order: 3,
   }),
+  // Day 2: 난바에서 도톤보리를 거쳐 신사이바시로 북상
   createDemoCard({
     instance_id: 'demo-kuromon',
     name: '구로몬 시장',
@@ -97,10 +108,132 @@ export const demoCards: Card[] = [
     day: 2,
     day_order: 2,
   }),
+  createDemoCard({
+    instance_id: 'demo-shinsaibashi',
+    name: '신사이바시 상점가',
+    category: 'place',
+    coordinates: { lat: 34.673, lng: 135.501 },
+    estimated_duration_min: 90,
+    day: 2,
+    day_order: 3,
+  }),
+  // Day 3: 우메다 역 주변에서 스카이 빌딩 방향으로 이동
+  createDemoCard({
+    instance_id: 'demo-grand-front',
+    name: '그랜드 프런트 오사카',
+    category: 'place',
+    coordinates: { lat: 34.7037, lng: 135.4959 },
+    estimated_duration_min: 90,
+    day: 3,
+    day_order: 1,
+  }),
+  createDemoCard({
+    instance_id: 'demo-umeda-sky',
+    name: '우메다 스카이 빌딩',
+    category: 'place',
+    coordinates: { lat: 34.7053, lng: 135.49 },
+    estimated_duration_min: 90,
+    day: 3,
+    day_order: 2,
+  }),
+  // Day 4: 덴포잔 항만 지역 안에서 이동
+  createDemoCard({
+    instance_id: 'demo-tempozan',
+    name: '덴포잔 대관람차',
+    category: 'activity',
+    coordinates: { lat: 34.6563, lng: 135.4309 },
+    estimated_duration_min: 45,
+    day: 4,
+    day_order: 1,
+  }),
+  createDemoCard({
+    instance_id: 'demo-kaiyukan',
+    name: '가이유칸',
+    category: 'activity',
+    coordinates: { lat: 34.6545, lng: 135.4289 },
+    estimated_duration_min: 150,
+    day: 4,
+    day_order: 2,
+  }),
+  // Day 5: 시텐노지에서 덴노지 공원을 거쳐 아베노로 이동
+  createDemoCard({
+    instance_id: 'demo-shitennoji',
+    name: '시텐노지',
+    category: 'place',
+    coordinates: { lat: 34.6545, lng: 135.5165 },
+    estimated_duration_min: 60,
+    day: 5,
+    day_order: 1,
+  }),
+  createDemoCard({
+    instance_id: 'demo-abeno-harukas',
+    name: '아베노 하루카스',
+    category: 'place',
+    coordinates: { lat: 34.6461, lng: 135.5135 },
+    estimated_duration_min: 90,
+    day: 5,
+    day_order: 2,
+  }),
+  // Day 6: 스미요시에서 동쪽 나가이 공원 지역으로 이동
+  createDemoCard({
+    instance_id: 'demo-sumiyoshi-taisha',
+    name: '스미요시 타이샤',
+    category: 'place',
+    coordinates: { lat: 34.6128, lng: 135.4938 },
+    estimated_duration_min: 60,
+    day: 6,
+    day_order: 1,
+  }),
+  createDemoCard({
+    instance_id: 'demo-nagai-park',
+    name: '나가이 공원',
+    category: 'place',
+    coordinates: { lat: 34.6139, lng: 135.5208 },
+    estimated_duration_min: 60,
+    day: 6,
+    day_order: 2,
+  }),
 ];
 
+// 일정 밖에서 서로 다른 검토 상태를 살펴보기 위한 예제입니다.
+const createReviewCard = (overrides: Partial<Card>): Card => ({
+  ...createDemoCard({
+    instance_id: '',
+    name: '',
+    category: 'etc',
+    coordinates: null,
+    estimated_duration_min: null,
+    day: null,
+    day_order: null,
+  }),
+  ...overrides,
+});
+
+export const demoReviewCards: Card[] = [
+  createReviewCard({
+    instance_id: 'demo-dinner-choice',
+    name: '난바 저녁 메뉴 고르기',
+    category: 'food',
+    classification: 'open_question',
+    placement_status: 'needs_input',
+    action_type: 'select_required',
+    question_text: '저녁으로 어떤 메뉴가 좋으세요?',
+    options: ['오코노미야키', '라멘', '스시'],
+    user_context: '도톤보리 구경 후 근처에서 저녁을 먹고 싶어요.',
+    tips: '메뉴 하나를 선택하고 확인하면 예제 식사 카드가 만들어져요.',
+  }),
+];
+
+// 선택한 기간 밖의 카드는 미배치 후보로 남겨 직접 일정에 추가할 수 있습니다.
+export const createDemoCardsForDays = (travelDays: number): Card[] =>
+  structuredClone([...demoCards, ...demoReviewCards]).map((card) =>
+    card.day !== null && card.day > travelDays
+      ? { ...card, day: null, day_order: null }
+      : card
+  );
+
 export const demoCardsResponse: CardsResponse = {
-  cards: demoCards,
+  cards: createDemoCardsForDays(demoTrip.travel_days),
   context_summary: '두 명이 함께하는 오사카 2일 예제 여행',
   alert_cards: [],
 };
@@ -113,7 +246,7 @@ export const demoDays: DayViewModel[] = Array.from(
     day_id: `${DEMO_TRIP_ID}-day-${index + 1}`,
     start_time_card: null,
     end_time_card: null,
-    cards: demoCards
+    cards: demoCardsResponse.cards
       .filter((card) => card.day === index + 1)
       .sort((a, b) => (a.day_order ?? 0) - (b.day_order ?? 0)),
   })
